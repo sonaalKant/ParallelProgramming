@@ -89,16 +89,16 @@ void WyllieListRanking(ListNode* L, size_t n) {
       } 
     });
 
-    for(size_t j=0;j<log2_up(n);j++)
-    {
-      parallel_for(0, n, [&](size_t i)
-      {
-        if(L[i].next != nullptr){
-          L[i].rank = L[i].rank + L[i].next->rank;
-          L[i].next = L[i].next->next;
-        }
-      });
-    }
+    // for(size_t j=0;j<log2_up(n);j++)
+    // {
+    //   parallel_for(0, n, [&](size_t i)
+    //   {
+    //     if(L[i].next != nullptr){
+    //       L[i].rank = L[i].rank + L[i].next->rank;
+    //       L[i].next = L[i].next->next;
+    //     }
+    //   });
+    // }
 
     // for(int i=0;i<n;i++)
     // {
@@ -107,18 +107,18 @@ void WyllieListRanking(ListNode* L, size_t n) {
     //     L[i].rank = 0;
     // }
 
-    // for(int j=0;j<log2_up(n);j++)
-    // {
-    //     for(int i=0;i<n;i++)
-    //     {
-    //       // std::cout << j << i << L[i].rank << std::endl;
-    //       if (L[i].next != nullptr){
-    //           L[i].rank = L[i].rank + L[i].next->rank;
-    //           L[i].next = L[i].next->next;
-    //       }
+    for(int j=0;j<log2_up(n);j++)
+    {
+        for(int i=0;i<n;i++)
+        {
+          // std::cout << j << i << L[i].rank << std::endl;
+          if (L[i].next != nullptr){
+              L[i].rank = L[i].rank + L[i].next->rank;
+              L[i].next = L[i].next->next;
+          }
           
-    //     }
-    // }
+        }
+    }
 }
 
 
@@ -146,32 +146,32 @@ void SamplingBasedListRanking(ListNode* L, size_t n, long num_samples=-1, parlay
 
   // std :: cout << "Num Samples " << num_samples << std :: endl;
   ListNode *head = L; 
-  // for(int i=0;i<num_samples-2;i++)
-  // {
-  //   // std::cout << r[i]%100 << " " <<  100/num_samples << " " << num_samples-2 << " " << count << std::endl;  
-  //     int idx = r[i] % n; 
-  //     while(hm.find(idx) != hm.end())
-  //       idx = r[i] % n;
+  for(int i=0;i<num_samples-2;i++)
+  {
+    // std::cout << r[i]%100 << " " <<  100/num_samples << " " << num_samples-2 << " " << count << std::endl;  
+      int idx = r[i] % n; 
+      while(hm.find(idx) != hm.end())
+        idx = r[i] % n;
       
-  //     hm[idx] = 1;
+      hm[idx] = 1;
 
-  //     std :: cout << idx << std :: endl;
-  //     L1[count+1] = L[idx];
-  //     // std::cout << "here" << std::endl;
-  //     L1[count].next = &L1[count+1];
-  //     int ctr = 0;
-  //     // std::cout << "here" << std::endl;
-  //     while (head->next != &L[idx])
-  //     {
-  //       // std::cout << "here" << std::endl;
-  //       head = head->next;
-  //       ctr++;
-  //     }
-  //     std :: cout << idx  << " " << ctr << std ::endl;
-  //     head = head->next;
-  //     weights[count++] = ctr;
+      std :: cout << idx << std :: endl;
+      L1[count+1] = L[idx];
+      // std::cout << "here" << std::endl;
+      L1[count].next = &L1[count+1];
+      int ctr = 0;
+      // std::cout << "here" << std::endl;
+      while (head->next != &L[idx])
+      {
+        // std::cout << "here" << std::endl;
+        head = head->next;
+        ctr++;
+      }
+      std :: cout << idx  << " " << ctr << std ::endl;
+      head = head->next;
+      weights[count++] = ctr;
     
-  // }
+  }
 
   // 9 --> 3 --> [0,4,8]
   // 16 --> 4 --> [0,5, 10, 15]
@@ -181,11 +181,13 @@ void SamplingBasedListRanking(ListNode* L, size_t n, long num_samples=-1, parlay
 
   int ctr = 1;
   // int pt = (n-1) / (num_samples-1);
-  // while(head->next != null && count < num_samples)
+  // while(head->next != nullptr && count < num_samples-1)
   // {
   //   if(ctr % pt == 0)
   //   {
-      
+  //        L1[count+1] = *head;
+  //        L1[count].next = &L1[count+1];
+  //        weights[count++] = ctr;
   //   }
 
   // }
