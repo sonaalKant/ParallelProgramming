@@ -17,7 +17,14 @@ T reduce(T *A, size_t n) {
     return 0;
   } else if (n == 1) {
     return A[0];
-  } else {
+  } 
+  
+  else if (n < 10000)
+  {
+    return serial_reduce(A, n);
+  }
+
+  else {
     T v1, v2;
     auto f1 = [&]() { v1 = reduce(A, n / 2); };
     auto f2 = [&]() { v2 = reduce(A + n / 2, n - n / 2); };
