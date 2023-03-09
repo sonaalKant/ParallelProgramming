@@ -107,9 +107,9 @@ void WyllieListRanking(ListNode* L, size_t n) {
     //     L[i].rank = 0;
     // }
 
-    for(int j=0;j<log2_up(n);j++)
+    for(size_t j=0;j<log2_up(n);j++)
     {
-        for(int i=0;i<n;i++)
+        for(size_t i=0;i<n;i++)
         {
           // std::cout << j << i << L[i].rank << std::endl;
           if (L[i].next != nullptr){
