@@ -141,56 +141,26 @@ void SamplingBasedListRanking(ListNode* L, size_t n, long num_samples=-1, parlay
   L1[0] = L[0];
   int count = 0;
 
-  std::map<int,int> hm;
-  hm[0] = 1;
-
-  // std :: cout << "Num Samples " << num_samples << std :: endl;
   ListNode *head = L; 
-  for(int i=0;i<num_samples-2;i++)
-  {
-    // std::cout << r[i]%100 << " " <<  100/num_samples << " " << num_samples-2 << " " << count << std::endl;  
-      int idx = r[i] % n; 
-      while(hm.find(idx) != hm.end())
-        idx = r[i] % n;
-      
-      hm[idx] = 1;
-
-      std :: cout << idx << std :: endl;
-      L1[count+1] = L[idx];
-      // std::cout << "here" << std::endl;
-      L1[count].next = &L1[count+1];
-      int ctr = 0;
-      // std::cout << "here" << std::endl;
-      while (head->next != &L[idx])
-      {
-        // std::cout << "here" << std::endl;
-        head = head->next;
-        ctr++;
-      }
-      std :: cout << idx  << " " << ctr << std ::endl;
-      head = head->next;
-      weights[count++] = ctr;
-    
-  }
-
-  // 9 --> 3 --> [0,4,8]
-  // 16 --> 4 --> [0,5, 10, 15]
-  // 25 --> 5 --> [0, 6, 12, 18, 24]
-  // 36 --> 6 --> [0, 7, 14, 21, 28, 35]
-  // 50 --> 7 --> [0,8,16,24,32,40, 49]
 
   int ctr = 1;
-  // int pt = (n-1) / (num_samples-1);
-  // while(head->next != nullptr && count < num_samples-1)
-  // {
-  //   if(ctr % pt == 0)
-  //   {
-  //        L1[count+1] = *head;
-  //        L1[count].next = &L1[count+1];
-  //        weights[count++] = ctr;
-  //   }
+  int prev = 0;
+  int pt = (n-1) / (num_samples-1);
 
-  // }
+  while(head->next != nullptr && count < num_samples-2)
+  {
+    if(ctr % pt == 0)
+    {
+         L1[count+1] = *head;
+         L1[count].next = &L1[count+1];
+         weights[count++] = ctr - prev -1;
+         prev = ctr;
+    }
+
+    head = head->next;
+    ctr++;
+
+  }
 
   ctr = -1;
   while(head->next != nullptr)
@@ -200,68 +170,44 @@ void SamplingBasedListRanking(ListNode* L, size_t n, long num_samples=-1, parlay
   }
 
   L1[count + 1] = *head;
-  // std :: cout << "Istail : " << (L1[count+1].next == nullptr)  << "  " << (head->next == nullptr) << std::endl;
   L1[count].next = &L1[count+1];
   weights[count++] = ctr;
   weights[count] = 0;
 
-  // std :: cout << "Istail : " << (L1[num_samples-1].next == nullptr)  << std::endl;
-
-  // L1[count+1] = L[n-1];
-  // L1[count].next = &L1[count+1];
-
-  // int ctr = 0;
-  // while (head->next != &L[n-1])
-  // {
-  //   head = head->next;
-  //   ctr++;
-  //   std :: cout << " HereR : " << ctr << std::endl;
-  // }
-  // std :: cout << "Here" << ctr << std :: endl;
-  // weights[count] = ctr;
-  // count++;
-
-  // weights[count] = 0;
-
-  // std :: cout << "here " << std::endl;
-
-  for(int i =0 ;i < num_samples; i++)
-  {
-    std::cout<< weights[i] << std::endl;
-  }
-
   WeightedSerialListRanking(L1, num_samples, weights);
-
-  // for(int i =0 ;i < num_samples; i++)
-  // {
-  //   std::cout<< "Rank "<< L1[i].rank << std::endl;
-  // }
 
   head = L;
   
   for(int i=0;i<num_samples;i++)
   {
     
-    // std::cout << "start " << i << " " << (head == nullptr) << std::endl;
     head->rank = L1[i].rank;
-    // std::cout << L1[i].rank << std::endl;
     int prev_rank = L1[i].rank;
-    // std::cout << "P " << i << std:: endl;
     while(weights[i] > 0)
     {
       head = head->next;
       head->rank = prev_rank - 1;
-      // std::cout << head->rank << std::endl;
       weights[i]--;
       prev_rank = head->rank;
     }
-    // std::cout << "Final " << std :: endl;
     if(head != nullptr)
       head = head->next;
-    // std::cout << "Complete " << i << std::endl;
   }
 
-  // std::cout << "Final 2" << std :: endl;
+    // parallel_for(0, num_samples, [&](size_t i)
+    // {
+    //   head->rank = L1[i].rank;
+    //   int prev_rank = L1[i].rank;
+    //   while(weights[i] > 0)
+    //   {
+    //     head = head->next;
+    //     head->rank = prev_rank - 1;
+    //     weights[i]--;
+    //     prev_rank = head->rank;
+    //   }
+    //   if(head != nullptr)
+    //     head = head->next;
+    // });
 
 }
 
