@@ -72,6 +72,9 @@ size_t WeightedSerialListRanking(ListNode* head, long num_samples, int *weights)
   
 }
 
+#include <mutex>
+
+
 // Wyllie's List Ranking. Based on pointer-jumping.
 //
 // The work/depth bounds of your implementation should be:
@@ -79,45 +82,27 @@ size_t WeightedSerialListRanking(ListNode* head, long num_samples, int *weights)
 // Depth = O(\log^2(n))
 void WyllieListRanking(ListNode* L, size_t n) {
 
-    // size_t* D = (size_t*)malloc((n-1) * sizeof(size_t));
+    std::mutex mutex;
 
     parallel_for(0, n, [&](size_t i)
     {
-      if(L[i].next != nullptr) L[i].rank = 1;
-      else{
-        L[i].rank = 0;
-      } 
+        std::lock_guard<std::mutex> lock(mutex);
+        if(L[i].next != nullptr) L[i].rank = 1;
+        else{
+            L[i].rank = 0;
+        } 
     });
-
-    // for(size_t j=0;j<log2_up(n);j++)
-    // {
-    //   parallel_for(0, n, [&](size_t i)
-    //   {
-    //     if(L[i].next != nullptr){
-    //       L[i].rank = L[i].rank + L[i].next->rank;
-    //       L[i].next = L[i].next->next;
-    //     }
-    //   });
-    // }
-
-    // for(int i=0;i<n;i++)
-    // {
-    //   if(L[i].next != nullptr) L[i].rank = 1;
-    //   else
-    //     L[i].rank = 0;
-    // }
 
     for(size_t j=0;j<log2_up(n);j++)
     {
-        for(size_t i=0;i<n;i++)
+        parallel_for(0, n, [&](size_t i)
         {
-          // std::cout << j << i << L[i].rank << std::endl;
-          if (L[i].next != nullptr){
-              L[i].rank = L[i].rank + L[i].next->rank;
-              L[i].next = L[i].next->next;
-          }
-          
-        }
+            std::lock_guard<std::mutex> lock(mutex);
+            if(L[i].next != nullptr){
+                L[i].rank = L[i].rank + L[i].next->rank;
+                L[i].next = L[i].next->next;
+            }
+        });
     }
 }
 
