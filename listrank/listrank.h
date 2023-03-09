@@ -179,7 +179,7 @@ void SamplingBasedListRanking(ListNode* L, size_t n, long num_samples=-1, parlay
   // 36 --> 6 --> [0, 7, 14, 21, 28, 35]
   // 50 --> 7 --> [0,8,16,24,32,40, 49]
 
-  // int ctr = 1;
+  int ctr = 1;
   // int pt = (n-1) / (num_samples-1);
   // while(head->next != null && count < num_samples)
   // {
