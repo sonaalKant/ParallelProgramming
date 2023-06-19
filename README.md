@@ -1,44 +1,4 @@
-# Homework 1 (Practice)
-
-In this homework you will start to build your own library of parallel
-primitives. We will start from the basics and gradually implement more
-interesting and sophisticated algorithms. For this first homework,
-we'll implement efficient parallel algorithms for the `reduce`
-primitive, the `scan` (or prefix-sum) primitive, and the `listrank`
-primitive. These primitives can be found in their respective
-directories.
-
-The rest of the instructions assume that you have cd'd into a given
-directory, and uses reduce as an example.
-
-# Instructions
-Create a new repository by clicking ``Use this template``->``Create a new repository`` and work on that.
-
-## What you should submit
-
-Please submit your code on Gradescope (you can directly link your github repo). Also,
-please submit a pdf with answers for the questions in this README on Gradescope.
-We have put all of the questions in quotes, e.g.:
-
-> Make sure your UID and name are clearly visible on your submission.
-
-## Grading
-
-There are 100 points in total.
-- 10 points: auto-graded tests to verify correctness, but not efficiency
-- 40 points: code satisfying the required work/depth bounds, breakdown
-  as follows:
-  - 10 points: scan code
-  - 15 points: wyllie code
-  - 15 points: sampling-based code
-- 20 points: writeup for reduce
-- 15 points: writeup for scan
-- 15 points: writeup for list-ranking
-
-## Can you refer to material online?
-
-Yes! Please go ahead. Just don't blindly copy code. If you found some
-resource useful, please include a link to it in your submission.
+# Primitives of Parallel Programming (Practice)
 
 ## Compiling the code
 
@@ -96,10 +56,6 @@ what `fork` does in the binary-forking model.
 
 ### Initial benchmarking, serial elision
 
-> Try running reduce on some large inputs, e.g., n=1e8 or n=1e9.
-  Try running on both 1 thread and all threads on your machine and
-  report the running times in your writeup. 
-
 As a point of comparison, on a 2021 M1Pro, this serial version on
 n=1e8 elements takes 1.45 seconds, and the parallel version takes
 0.238 seconds (6.1x speedup).
@@ -107,7 +63,6 @@ n=1e8 elements takes 1.45 seconds, and the parallel version takes
 The speedup looks high (big numbers good!), but you may be rightfully
 skeptical.
 
-> You can measure the speedup this way, but is this the right serial baseline?
 
 This 1-thread running time is the so-called "serial elision" of your
 parallel program, i.e., the serial program that we get when for each
@@ -121,20 +76,6 @@ f();
 g();
 ``
 
-There is still some (small) scheduling overheads incurred when we run
-using `PARLAY_NUM_THREADS=1 ./reduce ...`. You can make the serial
-elision a little faster by ignoring the scheduler altogether and
-compiling using `make SERIAL=1` (the difference is about 18% on my
-machine).
-
-## Implementing a better serial baseline
-
-Instead of the recursive serial elision we're using, write a better
-serial algorithm for reduce which just goes over the input array once
-and computes the sum of all of the elements.
-
-> What is the running time of this serial implementation? Does your
-> previous parallel code still get speedup?
 
 ## Adding granularity control  
 
@@ -146,10 +87,6 @@ Edit the parallel reduce implementation to use a better serial
 baseline. In particular, when $n$ is small enough, add the sum
 iteratively in sequential instead of dividing the tasks and computing
 the sum in parallel.  
-
-> What is the running time of your parallel implementation now, and
-> what is the speedup it obtains over the optimized serial
-> implementation?
 
 
 # Scan
